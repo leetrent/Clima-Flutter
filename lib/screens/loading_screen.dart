@@ -4,12 +4,17 @@ import 'package:clima/services/location.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+const String apiKey = '';
+
 class LoadingScreen extends StatefulWidget {
   @override
   _LoadingScreenState createState() => _LoadingScreenState();
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
+  double latitude;
+  double longitude;
+
   @override
   void initState() {
     print("[LoadingScreen][initState] => BEGIN");
@@ -28,12 +33,17 @@ class _LoadingScreenState extends State<LoadingScreen> {
         "[LoadingScreen][getLocation] => Returning from call to location service's getCurrentLocation()");
     print(location.latitude);
     print(location.longitude);
+
+    this.latitude = location.latitude;
+    this.longitude = location.longitude;
+
+    this.getData();
   }
 
   void getData() async {
     print("[LoadingScreen][getData] => Calling open weather map ...");
     http.Response response = await http.get(
-        'https://samples.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=b6907d289e10d714a6e88b30761fae22');
+        'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey');
     print("[LoadingScreen][getData] => Returning open weather map ...");
     if (response.statusCode == 200) {
       String data = response.body;
@@ -63,7 +73,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    getData();
     return Scaffold();
   }
 }
