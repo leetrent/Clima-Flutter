@@ -13,9 +13,6 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  double latitude;
-  double longitude;
-
   @override
   void initState() {
     print("[_LoadingScreenState][initState] => BEGIN");
@@ -26,39 +23,38 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   void getLocationData() async {
     print("[_LoadingScreenState][getLocationData] => BEGIN");
+
     Location location = Location();
     await location.getCurrentLocation();
-    this.latitude = location.latitude;
-    this.longitude = location.longitude;
 
     print(
-        "[_LoadingScreenState][getLocationData] => (this.latitude): $this.latitude");
+        "[_LoadingScreenState][getLocationData] => (this.latitude): ${location.latitude}");
     print(
         "[_LoadingScreenState][getLocationData] => (this.latitude.toString()).: " +
-            this.latitude.toString());
+            location.latitude.toString());
 
     print(
-        "[_LoadingScreenState][getLocationData] => (this.longitude): $this.longitude");
+        "[_LoadingScreenState][getLocationData] => (this.longitude): ${location.longitude}");
     print(
         "[_LoadingScreenState][getLocationData] => (this.longitude.toString()).: " +
-            this.longitude.toString());
+            location.longitude.toString());
 
     String openWeatherMapUrl =
-        'https://api.openweathermap.org/data/2.5/weather?lat=$this.latitude&lon=$this.longitude&appid=$apiKey';
+        'https://api.openweathermap.org/data/2.5/weather?lat=$location.latitude&lon=$location.longitude&appid=$apiKey';
 
     print(
         "[_LoadingScreenState][getLocationData] => (openWeatherMapUrl): $openWeatherMapUrl");
 
     openWeatherMapUrl =
-        'https://api.openweathermap.org/data/2.5/weather?lat=${this.latitude}&lon=${this.longitude}&appid=${apiKey}';
+        'https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=${apiKey}';
 
     print(
         "[_LoadingScreenState][getLocationData] => (openWeatherMapUrl): $openWeatherMapUrl");
 
     openWeatherMapUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=';
-    openWeatherMapUrl += this.latitude.toString();
+    openWeatherMapUrl += location.latitude.toString();
     openWeatherMapUrl += '&lon=';
-    openWeatherMapUrl += this.longitude.toString();
+    openWeatherMapUrl += location.longitude.toString();
     openWeatherMapUrl += '&appid=';
     openWeatherMapUrl += apiKey;
     openWeatherMapUrl += '&units=metric';
