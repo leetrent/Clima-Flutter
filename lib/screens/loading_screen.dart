@@ -49,6 +49,12 @@ class _LoadingScreenState extends State<LoadingScreen> {
     print(
         "[_LoadingScreenState][getLocationData] => (openWeatherMapUrl): $openWeatherMapUrl");
 
+    openWeatherMapUrl =
+        'https://api.openweathermap.org/data/2.5/weather?lat=${this.latitude}&lon=${this.longitude}&appid=${apiKey}';
+
+    print(
+        "[_LoadingScreenState][getLocationData] => (openWeatherMapUrl): $openWeatherMapUrl");
+
     openWeatherMapUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=';
     openWeatherMapUrl += this.latitude.toString();
     openWeatherMapUrl += '&lon=';

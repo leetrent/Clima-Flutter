@@ -81,7 +81,7 @@ class _LocationScreenState extends State<LocationScreen> {
                 child: Row(
                   children: <Widget>[
                     Text(
-                      this.temperature.toString() + '☀',
+                      '${this.temperature}°',
                       style: kTempTextStyle,
                     ),
                     Text(
