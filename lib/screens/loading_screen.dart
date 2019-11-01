@@ -1,8 +1,9 @@
-import 'dart:convert';
-
 import 'package:clima/services/location.dart';
+import 'package:clima/services/networking.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+import 'location_screen.dart';
 
 const String apiKey = '';
 
@@ -17,62 +18,69 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   @override
   void initState() {
-    print("[LoadingScreen][initState] => BEGIN");
+    print("[_LoadingScreenState][initState] => BEGIN");
     super.initState();
-    getLocation();
-    print("[LoadingScreen][initState] => END");
+    getLocationData();
+    print("[_LoadingScreenState][initState] => END");
   }
 
-  void getLocation() async {
-    print("[LoadingScreen][getLocation] => Instantiating location service");
+  void getLocationData() async {
+    print("[_LoadingScreenState][getLocationData] => BEGIN");
     Location location = Location();
-    print(
-        "[LoadingScreen][getLocation] => Calling location service's getCurrentLocation()");
     await location.getCurrentLocation();
-    print(
-        "[LoadingScreen][getLocation] => Returning from call to location service's getCurrentLocation()");
-    print(location.latitude);
-    print(location.longitude);
-
     this.latitude = location.latitude;
     this.longitude = location.longitude;
 
-    this.getData();
-  }
+    print(
+        "[_LoadingScreenState][getLocationData] => (this.latitude): $this.latitude");
+    print(
+        "[_LoadingScreenState][getLocationData] => (this.latitude.toString()).: " +
+            this.latitude.toString());
 
-  void getData() async {
-    print("[LoadingScreen][getData] => Calling open weather map ...");
-    http.Response response = await http.get(
-        'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey');
-    print("[LoadingScreen][getData] => Returning open weather map ...");
-    if (response.statusCode == 200) {
-      String data = response.body;
-//      print(data);
+    print(
+        "[_LoadingScreenState][getLocationData] => (this.longitude): $this.longitude");
+    print(
+        "[_LoadingScreenState][getLocationData] => (this.longitude.toString()).: " +
+            this.longitude.toString());
 
-      var decodedData = jsonDecode(data);
+    String openWeatherMapUrl =
+        'https://api.openweathermap.org/data/2.5/weather?lat=$this.latitude&lon=$this.longitude&appid=$apiKey';
 
-      double longitude = decodedData['coord']['lon'];
-      print("[LoadingScreen][getData] => (longitude): $longitude");
+    print(
+        "[_LoadingScreenState][getLocationData] => (openWeatherMapUrl): $openWeatherMapUrl");
 
-      String weatherDesc = decodedData['weather'][0]['description'];
-      print("[LoadingScreen][getData] => (weatherDesc): $weatherDesc");
+    openWeatherMapUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=';
+    openWeatherMapUrl += this.latitude.toString();
+    openWeatherMapUrl += '&lon=';
+    openWeatherMapUrl += this.longitude.toString();
+    openWeatherMapUrl += '&appid=';
+    openWeatherMapUrl += apiKey;
+    openWeatherMapUrl += '&units=metric';
 
-      double temperature = decodedData['main']['temp'];
-      print("[LoadingScreen][getData] => (temperature): $temperature");
+    print(
+        "[_LoadingScreenState][getLocationData] => (openWeatherMapUrl): $openWeatherMapUrl");
 
-      int condition = decodedData['weather'][0]['id'];
-      print("[LoadingScreen][getData] => (condition): $condition");
+    NetworkHelper networkHelper = NetworkHelper(url: openWeatherMapUrl);
 
-      String city = decodedData['name'];
-      print("[LoadingScreen][getData] => (city): $city");
-    } else {
-      print(response.statusCode);
-    }
-//    print(response.body);
+    var weatherData = await networkHelper.getData();
+
+    print(
+        "[_LoadingScreenState][getLocationData] => (weatherData): $weatherData");
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return LocationScreen(locationWeather: weatherData);
+    }));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      body: Center(
+        child: SpinKitDoubleBounce(
+          color: Colors.white,
+          size: 100.0,
+        ),
+      ),
+    );
   }
 }
