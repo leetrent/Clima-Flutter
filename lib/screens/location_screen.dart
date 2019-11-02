@@ -14,6 +14,7 @@ class _LocationScreenState extends State<LocationScreen> {
   WeatherModel weather = WeatherModel();
   int temperature;
   String weatherIcon;
+  String weatherMessage;
   String cityName;
 
   @override
@@ -32,6 +33,9 @@ class _LocationScreenState extends State<LocationScreen> {
 
     double tempAsDouble = weatherData['main']['temp'];
     this.temperature = tempAsDouble.toInt();
+    this.weatherMessage = weather.getMessage(temperature);
+    print("[_LocationScreenState][updateUI] => (this.weatherMessage): " +
+        this.weatherMessage);
 
     print("[_LocationScreenState][updateUI] => (this.temperature): " +
         this.temperature.toString());
@@ -104,7 +108,7 @@ class _LocationScreenState extends State<LocationScreen> {
               Padding(
                 padding: EdgeInsets.only(right: 15.0),
                 child: Text(
-                  "It's 🍦 time in San Francisco!",
+                  this.weatherMessage,
                   textAlign: TextAlign.right,
                   style: kMessageTextStyle,
                 ),
